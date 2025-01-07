@@ -218,6 +218,8 @@ class ReplacingMergeTree(MergeTree):
     def reflect(cls, table, engine_full, **kwargs):
         engine = parse_columns(engine_full, delimeter=' ')[0]
         version_col = engine[len(cls.__name__):].strip('()') or None
+        if version_col is not None:
+            version_col = version_col.split(',')[0]
 
         return cls(
             version=version_col,
