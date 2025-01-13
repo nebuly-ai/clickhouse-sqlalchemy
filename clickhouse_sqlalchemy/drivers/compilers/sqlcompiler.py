@@ -76,6 +76,12 @@ class ClickHouseSQLCompiler(compiler.SQLCompiler):
             self.process(func.clauses.clauses[2], **kw)
         )
 
+    def visit_getitem_binary(self, binary, operator, **kw):
+        return "%s[%s]" % (
+            self.process(binary.left, **kw),
+            self.process(binary.right, **kw),
+        )
+
     def limit_by_clause(self, select, **kw):
         text = ''
         limit_by_clause = select._limit_by_clause

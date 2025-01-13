@@ -2,6 +2,7 @@ from typing import Type, Union
 
 from sqlalchemy import types
 from sqlalchemy.sql.functions import Function
+from sqlalchemy.sql.sqltypes import Indexable
 from sqlalchemy.sql.type_api import to_instance
 
 
@@ -34,7 +35,7 @@ class JSON(types.JSON, ClickHouseTypeEngine):
     __visit_name__ = 'json'
 
 
-class Array(ClickHouseTypeEngine):
+class Array(ClickHouseTypeEngine, Indexable):
     __visit_name__ = 'array'
 
     hashable = False
