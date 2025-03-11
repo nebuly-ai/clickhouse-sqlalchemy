@@ -4,7 +4,6 @@ from alembic import __version__ as alembic_version
 from alembic.autogenerate import comparators
 from alembic.autogenerate.compare import _compare_columns
 from alembic.operations.ops import ModifyTableOps
-from alembic.util.sqla_compat import _reflect_table as _alembic_reflect_table
 from sqlalchemy import schema as sa_schema
 from sqlalchemy import text
 
@@ -35,10 +34,7 @@ for default_comparator in comparators._registry[('schema', 'default')]:
 
 
 def _reflect_table(inspector, table):
-    if alembic_version >= (1, 11, 0):
-        return _alembic_reflect_table(inspector, table)
-    else:
-        return _alembic_reflect_table(inspector, table, None)
+    return inspector.reflect_table(table, include_columns=None)
 
 
 @comparators.dispatch_for('schema', 'clickhouse')
