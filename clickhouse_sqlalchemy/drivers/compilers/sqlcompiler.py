@@ -394,7 +394,9 @@ class ClickHouseSQLCompiler(compiler.SQLCompiler):
             }
         )
 
-        text = "ALTER TABLE "
+        text = ""
+        if kw.get("lightweight", False):
+            text = "ALTER TABLE "
 
         table_text = self.delete_table_clause(
             delete_stmt, delete_stmt.table, extra_froms

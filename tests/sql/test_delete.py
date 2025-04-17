@@ -6,6 +6,21 @@ from tests.util import mock_object_attr
 
 
 class DeleteTestCase(NativeSessionTestCase):
+    def test_lightweight_delete(self):
+        t1 = Table(
+            't1', self.metadata(),
+            Column('x', types.Int32, primary_key=True),
+            engines.MergeTree('x', order_by=('x', ))
+        )
+
+        query = t1.delete(lightweight=True).where(t1.c.x == 25)
+        statement = self.compile(query, literal_binds=True)
+        self.assertEqual(statement, 'DELETE FROM t1 WHERE x = 25')
+
+        query = delete(t1, lightweight=True).where(t1.c.x == 25)
+        statement = self.compile(query, literal_binds=True)
+        self.assertEqual(statement, 'DELETE FROM t1 WHERE x = 25')
+
     def test_delete(self):
         t1 = Table(
             't1', self.metadata(),
