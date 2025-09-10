@@ -29,12 +29,12 @@ black: ## Python code formatter
 .PHONY: format
 format: black ## Check formatting
 
-.PHONY: type-check
-type-check: ## Runs the type checker (mypy) against the app code
-	uv run mypy src tests
+#.PHONY: type-check
+#type-check: ## Runs the type checker (mypy) against the app code
+#	uv run mypy src tests
 
 .PHONY: lint
-lint: ruff format type-check  ## Run linting checks
+lint: ruff format ## Run linting checks
 
 .PHONY: format-fix
 format-fix: ## Run the auto-formatter

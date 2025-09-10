@@ -10,7 +10,7 @@ class AsyncAdapt_asynch_cursor:
 
     def __init__(self, adapt_connection):
         self._adapt_connection = adapt_connection
-        self._connection = adapt_connection._connection  # noqa
+        self._connection = adapt_connection._connection
         self.await_ = adapt_connection.await_
 
         cursor = self._connection.cursor()
@@ -20,7 +20,7 @@ class AsyncAdapt_asynch_cursor:
 
     @property
     def _execute_mutex(self):
-        return self._adapt_connection._execute_mutex  # noqa
+        return self._adapt_connection._execute_mutex
 
     @property
     def description(self):
@@ -46,7 +46,7 @@ class AsyncAdapt_asynch_cursor:
         # note we aren't actually closing the cursor here,
         # we are just letting GC do it.   to allow this to be async
         # we would need the Result to change how it does "Safe close cursor".
-        self._rows[:] = []  # noqa
+        self._rows[:] = []
 
     def execute(self, operation, params=None, context=None):
         return self.await_(self._execute_async(operation, params, context))
