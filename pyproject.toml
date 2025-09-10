@@ -72,9 +72,12 @@ Changes = "https://github.com/xzkostyan/clickhouse-sqlalchemy/blob/master/CHANGE
 [dependency-groups]
 dev = [
     "alembic>=1.16.5",
+    "coverage>=7.10.6",
+    "greenlet>=3.2.4",
     "parameterized>=0.9.0",
     "pytest>=8.4.2",
     "pytest-asyncio>=1.1.0",
+    "pytest-cov>=7.0.0",
     "requests>=2.32.5",
     "responses>=0.25.8",
     "sphinx>=7.4.7",
