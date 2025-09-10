@@ -10,14 +10,12 @@ class ClickHouseInspector(reflection.Inspector):
         if not isinstance(table, Table):
             table.metadata.remove(table)
             ch_table = Table._make_from_standard(
-                table, _extend_on=kwargs.get('_extend_on')
+                table, _extend_on=kwargs.get("_extend_on")
             )
         else:
             ch_table = table
 
-        super(ClickHouseInspector, self).reflect_table(
-            ch_table, *args, **kwargs
-        )
+        super(ClickHouseInspector, self).reflect_table(ch_table, *args, **kwargs)
 
         with self._operation_context() as conn:
             schema = conn.schema_for_object(ch_table)
@@ -26,8 +24,7 @@ class ClickHouseInspector(reflection.Inspector):
 
     def _reflect_engine(self, table_name, schema, table):
         should_reflect = (
-            self.dialect.supports_engine_reflection and
-            self.dialect.engine_reflection
+            self.dialect.supports_engine_reflection and self.dialect.engine_reflection
         )
         if not should_reflect:
             return
@@ -38,7 +35,7 @@ class ClickHouseInspector(reflection.Inspector):
         if not e:
             raise ValueError("Cannot find engine for table '%s'" % table_name)
 
-        engine_cls = engine_cls_by_name.get(e['engine'])
+        engine_cls = engine_cls_by_name.get(e["engine"])
         if engine_cls is not None:
             engine = engine_cls.reflect(table, **e)
             engine._set_parent(table)
@@ -48,6 +45,5 @@ class ClickHouseInspector(reflection.Inspector):
     def get_engine(self, table_name, schema=None, **kw):
         with self._operation_context() as conn:
             return self.dialect.get_engine(
-                conn, table_name, schema=schema, info_cache=self.info_cache,
-                **kw
+                conn, table_name, schema=schema, info_cache=self.info_cache, **kw
             )

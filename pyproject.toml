@@ -80,5 +80,84 @@ dev = [
     "pytest-cov>=7.0.0",
     "requests>=2.32.5",
     "responses>=0.25.8",
+    "ruff>=0.12.12",
     "sphinx>=7.4.7",
 ]
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "I",
+    "ASYNC",
+    "T20",
+    "SIM",
+    "PIE",
+    "NPY",
+    "PGH",
+]
+ignore = [
+    "PLR0913", # Too many arguments
+    #    "PLR2004", # Magic value used in comparison
+    #    "PLR0911", # Too many return statements
+]
+
+# Allow autofix for all enabled rules (when `--fix`) is provided.
+fixable = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "I",
+    "N",
+    "Q",
+    "S",
+    "T",
+    "W",
+    "ANN",
+    "ARG",
+    "BLE",
+    "COM",
+    "DJ",
+    "DTZ",
+    "EM",
+    "ERA",
+    "EXE",
+    "FBT",
+    "ICN",
+    "INP",
+    "ISC",
+    "NPY",
+    "PD",
+    "PGH",
+    "PIE",
+    "PL",
+    "PT",
+    "PTH",
+    "PYI",
+    "RET",
+    "RSE",
+    "RUF",
+    "SIM",
+    "SLF",
+    "TCH",
+    "TID",
+    "TRY",
+    "UP",
+    "YTT",
+]
+unfixable = []
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**.py" = [
+    "E402", # Module level import not at top of file
+    "PLR2004", # Magic value used in comparison
+]
+

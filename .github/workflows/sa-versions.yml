@@ -21,20 +21,28 @@ jobs:
     name: ${{ matrix.python-version }} SA=2.0.${{ matrix.sa-version }}
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           architecture: x64
-      - name: Install test requirements
-        run: |
-          pip install --upgrade pip setuptools wheel
-          python testsrequire.py
-          python setup.py develop
-          # Limit each test time execution.
-          pip install pytest-timeout
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Show UV version
+        run: uv --version
+
+      - name: Install dependencies
+        run: uv sync --locked --all-extras --dev
+
       - name: Install SQLAlchemy
-        run: pip install sqlalchemy==2.0.${{ matrix.sa-version }}
+        run: uv run pip install sqlalchemy==2.0.${{ matrix.sa-version }}
+
       - name: Run tests
         run: pytest --timeout=10 -v
         timeout-minutes: 2

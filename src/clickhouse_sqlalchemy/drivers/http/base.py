@@ -4,7 +4,6 @@ from sqlalchemy.util import asbool
 from ..base import ClickHouseDialect, ClickHouseExecutionContextBase
 from . import connector
 
-
 # Export connector version
 VERSION = (0, 0, 2, None)
 
@@ -15,7 +14,7 @@ class ClickHouseExecutionContext(ClickHouseExecutionContextBase):
 
 
 class ClickHouseDialect_http(ClickHouseDialect):
-    driver = 'http'
+    driver = "http"
     execution_ctx_cls = ClickHouseExecutionContext
 
     supports_statement_cache = True
@@ -26,22 +25,20 @@ class ClickHouseDialect_http(ClickHouseDialect):
 
     def create_connect_args(self, url):
         kwargs = {}
-        protocol = url.query.get('protocol', 'http')
+        protocol = url.query.get("protocol", "http")
         port = url.port or 8123
-        db_name = url.database or 'default'
-        endpoint = url.query.get('endpoint', '')
+        db_name = url.database or "default"
+        endpoint = url.query.get("endpoint", "")
 
         query = dict(url.query)
-        self.engine_reflection = asbool(
-            query.pop('engine_reflection', 'true')
-        )
+        self.engine_reflection = asbool(query.pop("engine_reflection", "true"))
         url = url.set(query=query)
 
         kwargs.update(query)
-        if kwargs.get('verify') and kwargs['verify'] in ('False', 'false'):
-            kwargs['verify'] = False
+        if kwargs.get("verify") and kwargs["verify"] in ("False", "false"):
+            kwargs["verify"] = False
 
-        db_url = '%s://%s:%d/%s' % (protocol, url.host, port, endpoint)
+        db_url = "%s://%s:%d/%s" % (protocol, url.host, port, endpoint)
 
         return (db_url, db_name, url.username, url.password), kwargs
 

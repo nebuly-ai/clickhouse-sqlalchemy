@@ -6,13 +6,7 @@ from sqlalchemy.util.concurrency import await_only
 
 
 class AsyncAdapt_asynch_cursor:
-    __slots__ = (
-        '_adapt_connection',
-        '_connection',
-        'await_',
-        '_cursor',
-        '_rows'
-    )
+    __slots__ = ("_adapt_connection", "_connection", "await_", "_cursor", "_rows")
 
     def __init__(self, adapt_connection):
         self._adapt_connection = adapt_connection
@@ -59,11 +53,7 @@ class AsyncAdapt_asynch_cursor:
 
     async def _execute_async(self, operation, params, context):
         async with self._execute_mutex:
-            result = await self._cursor.execute(
-                operation,
-                args=params,
-                context=context
-            )
+            result = await self._cursor.execute(operation, args=params, context=context)
 
             self._rows = list(await self._cursor.fetchall())
             return result
@@ -74,9 +64,7 @@ class AsyncAdapt_asynch_cursor:
     async def _executemany_async(self, operation, params, context):
         async with self._execute_mutex:
             return await self._cursor.executemany(
-                operation,
-                args=params,
-                context=context
+                operation, args=params, context=context
             )
 
     def setinputsizes(self, *args):
@@ -112,7 +100,7 @@ class AsyncAdapt_asynch_cursor:
 class AsyncAdapt_asynch_dbapi:
     def __init__(self, asynch):
         self.asynch = asynch
-        self.paramstyle = 'pyformat'
+        self.paramstyle = "pyformat"
         self._init_dbapi_attributes()
 
     class Error(Exception):
@@ -120,31 +108,31 @@ class AsyncAdapt_asynch_dbapi:
 
     def _init_dbapi_attributes(self):
         for name in (
-                'ServerException',
-                'UnexpectedPacketFromServerError',
-                'LogicalError',
-                'UnknownTypeError',
-                'ChecksumDoesntMatchError',
-                'TypeMismatchError',
-                'UnknownCompressionMethod',
-                'TooLargeStringSize',
-                'NetworkError',
-                'SocketTimeoutError',
-                'UnknownPacketFromServerError',
-                'CannotParseUuidError',
-                'CannotParseDomainError',
-                'PartiallyConsumedQueryError',
-                'ColumnException',
-                'ColumnTypeMismatchException',
-                'StructPackException',
-                'InterfaceError',
-                'DatabaseError',
-                'ProgrammingError',
-                'NotSupportedError',
+            "ServerException",
+            "UnexpectedPacketFromServerError",
+            "LogicalError",
+            "UnknownTypeError",
+            "ChecksumDoesntMatchError",
+            "TypeMismatchError",
+            "UnknownCompressionMethod",
+            "TooLargeStringSize",
+            "NetworkError",
+            "SocketTimeoutError",
+            "UnknownPacketFromServerError",
+            "CannotParseUuidError",
+            "CannotParseDomainError",
+            "PartiallyConsumedQueryError",
+            "ColumnException",
+            "ColumnTypeMismatchException",
+            "StructPackException",
+            "InterfaceError",
+            "DatabaseError",
+            "ProgrammingError",
+            "NotSupportedError",
         ):
             setattr(self, name, getattr(self.asynch.errors, name))
 
-    def connect(self, *args, **kwargs) -> 'AsyncAdapt_asynch_connection':
+    def connect(self, *args, **kwargs) -> "AsyncAdapt_asynch_connection":
         connection = asynch.Connection(*args, **kwargs)
         await_only(connection.connect())
         return AsyncAdapt_asynch_connection(
@@ -155,7 +143,7 @@ class AsyncAdapt_asynch_dbapi:
 
 class AsyncAdapt_asynch_connection(AdaptedConnection):
     await_ = staticmethod(await_only)
-    __slots__ = ('dbapi', '_execute_mutex')
+    __slots__ = ("dbapi", "_execute_mutex")
 
     def __init__(self, dbapi, connection: asynch.Connection):
         self.dbapi = dbapi

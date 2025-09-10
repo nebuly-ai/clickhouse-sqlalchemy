@@ -1,10 +1,9 @@
 import asynch
-
-from sqlalchemy.sql.elements import TextClause
 from sqlalchemy.pool import AsyncAdaptedQueuePool
+from sqlalchemy.sql.elements import TextClause
 
-from .connector import AsyncAdapt_asynch_dbapi
 from ..native.base import ClickHouseDialect_native, ClickHouseExecutionContext
+from .connector import AsyncAdapt_asynch_dbapi
 
 # Export connector version
 VERSION = (0, 0, 1, None)
@@ -16,7 +15,7 @@ class ClickHouseAsynchExecutionContext(ClickHouseExecutionContext):
 
 
 class ClickHouseDialect_asynch(ClickHouseDialect_native):
-    driver = 'asynch'
+    driver = "asynch"
     execution_ctx_cls = ClickHouseAsynchExecutionContext
 
     is_async = True

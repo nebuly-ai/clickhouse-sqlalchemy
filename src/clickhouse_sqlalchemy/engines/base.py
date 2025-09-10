@@ -1,9 +1,9 @@
 from sqlalchemy.sql import ClauseElement
-from sqlalchemy.sql.schema import ColumnCollectionMixin, SchemaItem, Constraint
+from sqlalchemy.sql.schema import ColumnCollectionMixin, Constraint, SchemaItem
 
 
 class Engine(Constraint):
-    __visit_name__ = 'engine'
+    __visit_name__ = "engine"
 
     def __init__(self, *args, **kwargs):
         pass
