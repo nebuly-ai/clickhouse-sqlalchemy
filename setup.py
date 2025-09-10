@@ -94,12 +94,12 @@ setup(
         'Changes': github_url + '/blob/master/CHANGELOG.md'
     },
     packages=find_packages('.', exclude=["tests*"]),
-    python_requires='>=3.7, <4',
+    python_requires='>=3.9, <4',
     install_requires=[
         'sqlalchemy>=2.0.0,<2.1.0',
         'requests',
         'clickhouse-driver>=0.1.2',
-        'asynch>=0.2.2,<=0.2.4',
+        'asynch>=0.2.2,<0.4.0',
     ],
     # Registering `clickhouse` as dialect.
     entry_points={

@@ -1,5 +1,6 @@
 import asyncio
 
+import asynch
 from sqlalchemy.engine.interfaces import AdaptedConnection
 from sqlalchemy.util.concurrency import await_only
 
@@ -144,9 +145,11 @@ class AsyncAdapt_asynch_dbapi:
             setattr(self, name, getattr(self.asynch.errors, name))
 
     def connect(self, *args, **kwargs) -> 'AsyncAdapt_asynch_connection':
+        connection = asynch.Connection(*args, **kwargs)
+        await_only(connection.connect())
         return AsyncAdapt_asynch_connection(
             self,
-            await_only(self.asynch.connect(*args, **kwargs))
+            connection,
         )
 
 
@@ -154,7 +157,7 @@ class AsyncAdapt_asynch_connection(AdaptedConnection):
     await_ = staticmethod(await_only)
     __slots__ = ('dbapi', '_execute_mutex')
 
-    def __init__(self, dbapi, connection):
+    def __init__(self, dbapi, connection: asynch.Connection):
         self.dbapi = dbapi
         self._connection = connection
         self._execute_mutex = asyncio.Lock()
