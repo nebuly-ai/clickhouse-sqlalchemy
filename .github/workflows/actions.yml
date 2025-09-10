@@ -21,6 +21,10 @@ jobs:
         ports:
           - 8123:8123
           - 9000:9000
+        env:
+          CLICKHOUSE_USER: default
+          CLICKHOUSE_DB: test
+          CLICKHOUSE_PASSWORD: changethis
 
     name: ${{ matrix.python-version }} CH=${{ matrix.clickhouse-version }}
     steps:
