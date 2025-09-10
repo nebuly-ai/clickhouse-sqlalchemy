@@ -2,7 +2,7 @@ on: [push, pull_request]
 name: build
 jobs:
   tests:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         python-version:
@@ -11,10 +11,6 @@ jobs:
           - "3.11"
           - "3.12"
         include:
-          - clickhouse-version: 18.14.9
-            clickhouse-org: yandex
-          - clickhouse-version: 19.3.5
-            clickhouse-org: yandex
           - clickhouse-version: 22.5.1.2079
             clickhouse-org: clickhouse
           - clickhouse-version: 23.8.4.69
@@ -25,52 +21,38 @@ jobs:
         ports:
           - 8123:8123
           - 9000:9000
+        env:
+          CLICKHOUSE_USER: default
+          CLICKHOUSE_DB: test
+          CLICKHOUSE_PASSWORD: changethis
 
     name: ${{ matrix.python-version }} CH=${{ matrix.clickhouse-version }}
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           architecture: x64
-      - name: Install test requirements
-        run: |
-          pip install --upgrade pip setuptools wheel
-          pip install flake8 flake8-print coverage
-          python testsrequire.py
-          python setup.py develop
-          # Limit each test time execution.
-          pip install pytest-timeout
-      - name: Run flake8
-        run: flake8
-      - name: Run tests
-        run: coverage run --source=clickhouse_sqlalchemy -m pytest --timeout=10 -v
-        timeout-minutes: 2
-      - name: Set up Python for coverage submission
-        if: ${{ matrix.python-version == '2.7' }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.8
-          architecture: x64
-      - name: Install coveralls
-        run: |
-          # Newer coveralls do not work with github actions.
-          pip install 'coveralls<3.0.0'
-      - name: Upload coverage
-        run: coveralls
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COVERALLS_PARALLEL: true
-          COVERALLS_FLAG_NAME: ${{ matrix.python-version }} CH=${{ matrix.clickhouse-version }}
 
-  coveralls-finished:
-    name: Indicate completion to coveralls.io
-    needs: tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Finished
-        uses: coverallsapp/github-action@v2.3.3
+      - name: Display Python version
+        run: python -c "import sys; print(sys.version)"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          parallel-finished: true
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Show UV version
+        run: uv --version
+
+      - name: Install dependencies
+        run: uv sync --locked --all-extras --dev
+
+      - name: Activate venv
+        run: source $VENV || source .venv/bin/activate
+
+      - name: Run checks
+        run: make check

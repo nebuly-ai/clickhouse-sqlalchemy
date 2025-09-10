@@ -2,7 +2,7 @@ on: [push, pull_request]
 name: "SQLAlchemy >=2.0.0 versions"
 jobs:
   tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -17,24 +17,36 @@ jobs:
         ports:
           - 8123:8123
           - 9000:9000
+        env:
+          CLICKHOUSE_USER: default
+          CLICKHOUSE_DB: test
+          CLICKHOUSE_PASSWORD: changethis
 
     name: ${{ matrix.python-version }} SA=2.0.${{ matrix.sa-version }}
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           architecture: x64
-      - name: Install test requirements
-        run: |
-          pip install --upgrade pip setuptools wheel
-          python testsrequire.py
-          python setup.py develop
-          # Limit each test time execution.
-          pip install pytest-timeout
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Show UV version
+        run: uv --version
+
+      - name: Install dependencies
+        run: uv sync --locked --all-extras --dev
+
       - name: Install SQLAlchemy
-        run: pip install sqlalchemy==2.0.${{ matrix.sa-version }}
+        run: uv run pip install sqlalchemy==2.0.${{ matrix.sa-version }}
+
       - name: Run tests
-        run: pytest --timeout=10 -v
+        run: make test
         timeout-minutes: 2

@@ -16,19 +16,14 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
-from clickhouse_sqlalchemy import __version__, VERSION
+from importlib.metadata import version as get_version
 
 # -- Project information -----------------------------------------------------
 
-project = 'clickhouse-sqlalchemy'
-copyright = '2017-2022, clickhouse-sqlalchemy authors'
+project = "clickhouse-sqlalchemy"
+release = get_version(project)  # full version string
+version = ".".join(release.split(".")[:2])  # short X.Y
 author = 'clickhouse-sqlalchemy authors'
-
-# The short X.Y version
-version = '.'.join(str(x) for x in VERSION[:2])
-# The full version, including alpha/beta/rc tags
-release = __version__
-
 
 # -- General configuration ---------------------------------------------------
 
