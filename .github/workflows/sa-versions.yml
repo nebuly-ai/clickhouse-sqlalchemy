@@ -44,5 +44,5 @@ jobs:
         run: uv run pip install sqlalchemy==2.0.${{ matrix.sa-version }}
 
       - name: Run tests
-        run: pytest --timeout=10 -v
+        run: make test
         timeout-minutes: 2
